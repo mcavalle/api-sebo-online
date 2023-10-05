@@ -1,15 +1,19 @@
 {
-  "name": "api_teste",
+  "name": "Sebo Online SA",
   "version": "1.0.0",
-  "description": "",
+  "description": "Projeto de desenvolvimento de uma API para um sebo online.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon ./index.js localhost 3000"
   },
   "keywords": [],
-  "author": "",
+  "author": "Mariana Cavalle",
   "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mcavalle/api-sebo-online/"
+  },
   "dependencies": {
     "bcrypt": "^5.1.1",
     "dotenv": "^16.3.1",
