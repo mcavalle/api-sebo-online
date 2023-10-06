@@ -4,10 +4,15 @@ const express = require('express')
 const mongoose = require('mongoose')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
+const session = require('express-session');
 const app = express()
 
 //leitura do JSON
-app.use(
+app.use(session({
+    secret: 'secreto', // Uma chave secreta para assinar a sessão
+    resave: false, // Não regravar a sessão se não houver alterações
+    saveUninitialized: true, // Salvar sessões não inicializadas
+  }),
     express.urlencoded({
         extended: true,
     }),

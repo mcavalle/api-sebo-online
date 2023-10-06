@@ -1,44 +1,17 @@
 const router = require('express').Router()
+const session = require('express-session');
 const bcrypt = require('bcrypt')
+const cookieParser = require('cookie-parser');
 const jwt = require('jsonwebtoken')
+
+router.use(cookieParser());
 
 const Usuario = require('../models/Usuario')
 
-// Rotas privadas
-router.get("/user/:id", checkToken, async (req, res) => {
-    const id = req.params.id
-
-    const usuario = await Usuario.findById(id, '-password')
-
-    if("usuario"){
-        return res.status(404).json({message: "Usuário não encontrado"})
-    }
-
-    res.status(200).json({usuario})
-})
-
-function checkToken (req, res, next){
-    const authHeader = req.headers['authorization']
-    const token = authHeader && authHeader.split(" ")[1]
-
-    if(!token){
-        return res.status(401).json({message: 'Acesso negado'})
-    }
-
-    try{
-        const secret = process.env.SECRET
-
-        jwt.verify(token, secret)
-
-        next()
-    }catch(error){
-        res.status(400).json({message: 'Token inválido!'})
-    }
-}
 
 //registrar usuário
 router.post('/cadastro', async (req, res) => {
-    const {name, email, password, confirmPassword, active, type, date, areaEspecializacao} = req.body
+    const {name, email, password, confirmPassword, active, type, date, area} = req.body
 
     if(!name){
         return res.status(422).json({message: 'O nome é obrigatório'})
@@ -58,8 +31,17 @@ router.post('/cadastro', async (req, res) => {
     if(!type){
         return res.status(422).json({message: 'O tipo de usuário é obrigatório'})
     }
-    if(type === "administrador" && !date || !areaEspecializacao){
+    if(type === "administrador" && !date){
         return res.status(422).json({message: 'Preencha data de início e área de especialização'})
+    }
+    if(type === "administrador" && !date){
+        return res.status(422).json({message: 'Preencha data de início e área de especialização'})
+    }
+    if(type !== "administrador" && date){
+        return res.status(422).json({message: 'Campos de data e área são exclusivos para cadastro de administradores'})
+    }
+    if(type !== "administrador" && area){
+        return res.status(422).json({message: 'Campos de data e área são exclusivos para cadastro de administradores'})
     }
 
     //checar se usuário existe
@@ -81,7 +63,7 @@ router.post('/cadastro', async (req, res) => {
         active,
         type,
         date,
-        areaEspecializacao,
+        area,
     })
 
     try{
@@ -127,6 +109,8 @@ router.post("/login", async (req, res) => {
         secret,
         )
 
+        res.cookie('token', token, {httpOnly: true})
+
         res.status(200).json({message: "Autenticação realizada com sucesso!"})
 
     }catch(error){
@@ -136,6 +120,15 @@ router.post("/login", async (req, res) => {
     }
 })
 
+//Logout
+router.get('/logout', (req, res) => {
+
+    res.clearCookie('token');
+    req.session.message = 'Logout realizado com sucesso!';
+
+    res.redirect('/');
+});
+  
 
 //Update
 router.patch('/:id', async (req, res) => {

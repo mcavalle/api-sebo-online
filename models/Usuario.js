@@ -7,7 +7,7 @@ const Usuario = mongoose.model('Usuario', {
     active: Boolean,
     type: String,
     date: Date,
-    areaEspecializacao: String,
+    area: String,
 })
 
 module.exports = Usuario

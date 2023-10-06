@@ -1,6 +1,10 @@
 const router = require('express').Router()
+const session = require('express-session');
 const bcrypt = require('bcrypt')
+const cookieParser = require('cookie-parser');
 const jwt = require('jsonwebtoken')
+
+router.use(cookieParser());
 
 const Usuario = require('../models/Usuario')
 
@@ -37,7 +41,9 @@ router.post("/login", async (req, res) => {
         secret,
         )
 
-        res.status(200).json({message: "Autenticação realizada com sucesso!"})
+        res.cookie('token', token, {httpOnly: true})
+
+        res.status(200).json({message: "Autenticação realizada com sucesso!", token})
 
     }catch(error){
         console.log(error)
@@ -46,31 +52,77 @@ router.post("/login", async (req, res) => {
     }
 })
 
-//Read
-router.get('/usuarios', async (req, res) => {
-    try{
-        const usuarios = await Usuario.find()
-        res.status(200).json(usuarios)
-    } catch (error){
-        res.status(500).json({error: error})
-    }
-})
+//Logout
+router.get('/logout', (req, res) => {
 
-router.get('/usuario/:id', async (req, res) => {
+    res.clearCookie('token');
+    req.session.message = 'Logout realizado com sucesso!';
+
+    res.redirect('/');
+});
+
+// Rotas privadas
+// Buscar usuário por ID
+router.get("/usuario/:id", checkToken, async (req, res) => {
     const id = req.params.id
 
-    try{
-        const usuario = await Usuario.findOne({_id: id})
+    const usuario = await Usuario.findById(id, '-password')
 
-        if(!usuario){
-            res.status(422).json({message: 'Usuário não foi encontrado!'})
-            return
-        }
-
-        res.status(200).json(usuario)
-    } catch(error){
-        res.status(500).json({error: error})
+    if("usuario"){
+        return res.status(404).json({message: "Usuário não encontrado"})
     }
+
+    res.status(200).json({usuario})
 })
+
+function checkToken (req, res, next){
+    const authHeader = req.headers['authorization']
+    const token = authHeader && authHeader.split(" ")[1]
+
+    if(!token){
+        return res.status(401).json({message: 'Acesso negado'})
+    }
+
+    try{
+        const secret = process.env.SECRET
+
+        jwt.verify(token, secret)
+
+        next()
+    }catch(error){
+        res.status(400).json({message: 'Token inválido!'})
+    }
+}
+
+// Buscar usuários
+router.get("/usuarios/", checkToken, async (req, res) => {
+    const id = req.params.id
+
+    const usuario = await Usuario.find()
+
+
+    res.status(200).json({usuario})
+})
+
+function checkToken (req, res, next){
+    const authHeader = req.headers['authorization']
+    const token = authHeader && authHeader.split(" ")[1]
+
+    if(!token){
+        return res.status(401).json({message: 'Acesso negado'})
+    }
+
+    try{
+        const secret = process.env.SECRET
+
+        jwt.verify(token, secret)
+
+        next()
+    }catch(error){
+        res.status(400).json({message: 'Token inválido!'})
+    }
+}
+
+
 
 module.exports = router
