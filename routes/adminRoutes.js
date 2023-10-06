@@ -68,7 +68,7 @@ router.get("/usuario/:id", checkToken, async (req, res) => {
 
     const usuario = await Usuario.findById(id, '-password')
 
-    if("usuario"){
+    if(!usuario){
         return res.status(404).json({message: "Usuário não encontrado"})
     }
 
@@ -94,8 +94,37 @@ function checkToken (req, res, next){
     }
 }
 
-// Buscar usuários
-router.get("/usuarios/", checkToken, async (req, res) => {
+// Listar usuários
+router.get("/usuarios", checkToken, async (req, res) => {
+    const id = req.params.id
+
+    const usuario = await Usuario.find({}, '-password')
+
+    res.status(200).json({usuario})
+})
+
+function checkToken (req, res, next){
+    const authHeader = req.headers['authorization']
+    const token = authHeader && authHeader.split(" ")[1]
+
+    if(!token){
+        return res.status(401).json({message: 'Acesso negado'})
+    }
+
+    try{
+        const secret = process.env.SECRET
+
+        jwt.verify(token, secret)
+
+        next()
+    }catch(error){
+        res.status(400).json({message: 'Token inválido!'})
+    }
+}
+
+
+// Relatórios
+router.get("/relatorios/", checkToken, async (req, res) => {
     const id = req.params.id
 
     const usuario = await Usuario.find()
@@ -122,7 +151,6 @@ function checkToken (req, res, next){
         res.status(400).json({message: 'Token inválido!'})
     }
 }
-
 
 
 module.exports = router
