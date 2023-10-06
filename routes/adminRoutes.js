@@ -124,13 +124,8 @@ function checkToken (req, res, next){
 
 
 // Relatórios
-router.get("/relatorios/", checkToken, async (req, res) => {
-    const id = req.params.id
-
-    const usuario = await Usuario.find()
-
-
-    res.status(200).json({usuario})
+router.get("/relatorios", checkToken, async (req, res) => {
+    
 })
 
 function checkToken (req, res, next){
