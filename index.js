@@ -7,6 +7,7 @@ const jwt = require('jsonwebtoken')
 const session = require('express-session');
 const app = express()
 
+
 //leitura do JSON
 app.use(session({
     secret: 'secreto', // Uma chave secreta para assinar a sessão

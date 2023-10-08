@@ -165,17 +165,18 @@ router.delete('/:id', async (req, res) => {
 
     const usuario = await Usuario.findOne({_id: id})
 
-    if(!usuario){
+    if (!usuario) {
         res.status(422).json({message: 'Usuário não foi encontrado!'})
         return
     }
 
-    try{
-        await Usuario.findOneAndUpdate({_id: id, active: false})
+    try {
+        await Usuario.findOneAndUpdate({ _id: id }, { active: false })
 
-        res.status(200).json({message: 'Usuário inativado com sucesso'})
-    } catch (error){
-        res.status(500).json({error: error})
+        res.status(200).json({ message: 'Usuário inativado com sucesso' })
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ error: 'Erro interno do servidor' });
     }
 })
 

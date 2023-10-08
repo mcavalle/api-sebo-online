@@ -1,10 +1,11 @@
 {
-  "name": "Sebo Online SA",
-  "version": "1.0.2",
+  "name": "sebo-online-api",
+  "version": "1.0.3",
   "description": "Projeto de desenvolvimento de uma API para um sebo online.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc",
     "start": "nodemon ./index.js localhost 3000"
   },
   "keywords": [],
@@ -15,6 +16,7 @@
     "url": "https://github.com/mcavalle/api-sebo-online/"
   },
   "dependencies": {
+    "@types/swagger-ui-express": "^4.1.4",
     "bcrypt": "^5.1.1",
     "cookie-parser": "^1.4.6",
     "dotenv": "^16.3.1",
@@ -23,6 +25,10 @@
     "jsonwebtoken": "^9.0.2",
     "mongodb": "^6.1.0",
     "mongoose": "^7.5.3",
-    "nodemon": "^3.0.1"
+    "nodemon": "^3.0.1",
+    "swagger-ui-express": "^5.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.2.2"
   }
 }
