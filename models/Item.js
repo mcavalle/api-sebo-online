@@ -1,8 +1,9 @@
 const mongoose = require('mongoose')
 
-const Livro = mongoose.model('Livro', {
+const Item = mongoose.model('Item', {
     title: String,
     author: String,
+    type: String,
     categoryId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Categoria'
@@ -17,4 +18,4 @@ const Livro = mongoose.model('Livro', {
     }
 })
 
-module.exports = Livro
+module.exports = Item

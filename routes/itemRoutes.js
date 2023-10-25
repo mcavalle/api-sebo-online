@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken')
 
 router.use(cookieParser());
 
-const Livro = require('../models/Livro')
+const Item = require('../models/Item')
 
 function checkAuthentication(req, res, next) {
     const token = req.cookies.token;
@@ -21,11 +21,10 @@ function checkAuthentication(req, res, next) {
       return res.status(401).json({ message: 'Token inválido. Faça login para continuar.' });
     }
   }
-  
 
-//cadastrar livro
+//cadastrar item
 router.post('/cadastro', checkAuthentication, async (req, res) => {
-    const {title, author, categoryId, price, description, active, editionDate, sellerId} = req.body
+    const {title, author, type, categoryId, price, description, active, editionDate, sellerId} = req.body
 
     if(!title){
         return res.status(422).json({message: 'O título é obrigatório'})
@@ -52,17 +51,18 @@ router.post('/cadastro', checkAuthentication, async (req, res) => {
         return res.status(422).json({message: 'O ID do vendedor é obrigatório'})
     }
 
-    //checar se livro existe
-    const livroExists = await Livro.findOne({ title: title})
+    //checar se item existe
+    const itemExists = await Item.findOne({ title: title})
 
-    if(livroExists){
-        return res.status(422).json({message: 'Livro já cadastrado!'})
+    if(itemExists){
+        return res.status(422).json({message: 'Item já cadastrado!'})
     }
 
-    //criar livro
-    const livro = new Livro ({
+    //criar item
+    const item = new Item ({
         title,
         author,
+        type,
         categoryId,
         price,
         description,
@@ -72,13 +72,24 @@ router.post('/cadastro', checkAuthentication, async (req, res) => {
     })
 
     try{
-        await livro.save()
+        await item.save()
 
-        res.status(201).json({message: 'Livro cadastrado com sucesso!'})
+        res.status(201).json({message: 'Item cadastrado com sucesso!'})
     }catch(error){
         console.log(error)
         res.status(500).json({message: 'Erro no servidor'})
     }
 })
+
+//Listar itens
+router.get("/itens", async (req, res) => {
+    const id = req.params.id
+
+    const item = await Item.find({})
+
+    res.status(200).json({item})
+})
+
+
 
 module.exports = router
