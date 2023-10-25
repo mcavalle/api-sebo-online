@@ -152,7 +152,7 @@ router.patch('/:id', async (req, res) => {
             res.status(422).json({message: 'Usuário não foi encontrado!'})
         }
 
-        res.status(200).json(usuario)
+        res.status(200).json(usuario, '-password')
 
     } catch (error){
         res.status(500).json({error: error})
