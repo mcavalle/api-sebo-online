@@ -82,7 +82,7 @@ router.post('/cadastro', checkAuthentication, async (req, res) => {
 })
 
 //Listar itens
-router.get("/itens", async (req, res) => {
+router.get("/", async (req, res) => {
     const id = req.params.id
 
     const item = await Item.find({})
@@ -90,6 +90,71 @@ router.get("/itens", async (req, res) => {
     res.status(200).json({item})
 })
 
+//Buscar por ID
+router.get("/:id", async (req, res) => {
+    const id = req.params.id
+
+    const item = await Item.findById(id)
+
+    if(!item){
+        return res.status(404).json({message: "Item não encontrado"})
+    }
+
+    res.status(200).json({item})
+})
+
+//Editar item
+router.patch('/:id', async (req, res) => {
+    const id = req.params.id
+
+    const { title, author, type, categoryId, price, description, active, editionDate, sellerId } = req.body
+
+    const item = {
+        title,
+        author,
+        type,
+        categoryId,
+        price,
+        description,
+        active,
+        editionDate,
+        sellerId
+    }
+
+    try{
+        const updateItem = await Item.updateOne({_id: id}, item)
+
+        if(updateItem.matchedCount === 0){
+            res.status(422).json({message: 'Item não foi encontrado!'})
+        }
+
+        res.status(200).json(item)
+
+    } catch (error){
+        res.status(500).json({error: error})
+    }
+})
+
+//Delete
+router.delete('/:id', async (req, res) => {
+    const id = req.params.id
+
+    const item = await Item.findOne({_id: id})
+
+    if (!item) {
+        res.status(422).json({message: 'Item não foi encontrado!'})
+        return
+    }
+
+    try {
+        await Item.findOneAndUpdate({ _id: id }, { active: false })
+
+        res.status(200).json({ message: 'Item inativado com sucesso' })
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ error: 'Erro interno do servidor' });
+    }
+})
 
 
 module.exports = router
