@@ -1,16 +1,31 @@
 const router = require('express').Router()
-const session = require('express-session');
-const bcrypt = require('bcrypt')
 const cookieParser = require('cookie-parser');
 const jwt = require('jsonwebtoken')
 
 router.use(cookieParser());
 
-const Usuario = require('../models/Livro')
+const Livro = require('../models/Livro')
+
+function checkAuthentication(req, res, next) {
+    const token = req.cookies.token;
+  
+    if (!token) {
+      return res.status(401).json({ message: 'Acesso negado. Faça login para continuar.' });
+    }
+  
+    try {
+      const secret = process.env.SECRET;
+      jwt.verify(token, secret);
+      next(); 
+    } catch (error) {
+      return res.status(401).json({ message: 'Token inválido. Faça login para continuar.' });
+    }
+  }
+  
 
 //cadastrar livro
-router.post('/cadastro', async (req, res) => {
-    const {title, author, category, price, description, active, editionDate, sellerId} = req.body
+router.post('/cadastro', checkAuthentication, async (req, res) => {
+    const {title, author, categoryId, price, description, active, editionDate, sellerId} = req.body
 
     if(!title){
         return res.status(422).json({message: 'O título é obrigatório'})
@@ -18,7 +33,7 @@ router.post('/cadastro', async (req, res) => {
     if(!author){
         return res.status(422).json({message: 'O autor é obrigatório'})
     }
-    if(!category){
+    if(!categoryId){
         return res.status(422).json({message: 'A categoria é obrigatória'})
     }
     if(!active){
@@ -38,17 +53,17 @@ router.post('/cadastro', async (req, res) => {
     }
 
     //checar se livro existe
-    const bookExists = await Usuario.findOne({ title: title})
+    const livroExists = await Livro.findOne({ title: title})
 
-    if(bookExists){
+    if(livroExists){
         return res.status(422).json({message: 'Livro já cadastrado!'})
     }
 
     //criar livro
-    const usuario = new Usuario ({
+    const livro = new Livro ({
         title,
         author,
-        category,
+        categoryId,
         price,
         description,
         active,
@@ -57,7 +72,7 @@ router.post('/cadastro', async (req, res) => {
     })
 
     try{
-        await usuario.save()
+        await livro.save()
 
         res.status(201).json({message: 'Livro cadastrado com sucesso!'})
     }catch(error){
@@ -65,3 +80,5 @@ router.post('/cadastro', async (req, res) => {
         res.status(500).json({message: 'Erro no servidor'})
     }
 })
+
+module.exports = router

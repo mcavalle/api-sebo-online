@@ -24,13 +24,20 @@ app.use(express.json())
 
 //models
 const Usuario = require('./models/Usuario')
+const Livro = require('./models/Livro')
+const Categoria = require('./models/Categoria')
 
 //rotas da API
 const usuarioRoutes = require('./routes/usuarioRoutes')
 const adminRoutes = require('./routes/adminRoutes')
+const livroRoutes = require('./routes/livroRoutes')
+const categoriaRoutes = require('./routes/categoriaRoutes')
 
 app.use('/usuario', usuarioRoutes)
 app.use('/admin', adminRoutes)
+app.use('/livro', livroRoutes)
+app.use('/categoria', categoriaRoutes)
+
 
 //rota inicial / endpoint
 app.get('/', (req, res) => {
@@ -46,4 +53,3 @@ mongoose.connect(`mongodb+srv://${DB_USER}:${DB_PASSWORD}@cluster0.afztj5c.mongo
     app.listen(3000)
 })
 .catch((err) => console.log(err))
-
