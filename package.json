@@ -1,6 +1,6 @@
 {
   "name": "sebo-online-api",
-  "version": "1.0.3",
+  "version": "1.1.2",
   "description": "Projeto de desenvolvimento de uma API para um sebo online.",
   "main": "index.js",
   "scripts": {
