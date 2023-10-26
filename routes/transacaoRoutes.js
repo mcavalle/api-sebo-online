@@ -61,7 +61,7 @@ router.post('/cadastro', checkAuthentication, async (req, res) => {
 })
 
 // Listar transações
-router.get("/", async (req, res) => {
+router.get("/", checkAuthentication, async (req, res) => {
     const id = req.params.id
 
     const transacao = await Transacao.find({})
@@ -70,7 +70,7 @@ router.get("/", async (req, res) => {
 })
 
 // Buscar por ID do vendedor
-router.get("/:id", async (req, res) => {
+router.get("/:id", checkAuthentication, async (req, res) => {
     const id = req.params.id
 
     const transacao = await Transacao.findById(id)
@@ -83,7 +83,7 @@ router.get("/:id", async (req, res) => {
 })
 
 // Buscar transações por ID do vendedor
-router.get("/vendedor/:id", async (req, res) => {
+router.get("/vendedor/:id", checkAuthentication, async (req, res) => {
     const vendedorId = req.params.id;
   
     const transacao = await Transacao.find({ sellerId: vendedorId });

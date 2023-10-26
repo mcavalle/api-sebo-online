@@ -82,7 +82,7 @@ router.post('/cadastro', checkAuthentication, async (req, res) => {
 })
 
 //Listar itens
-router.get("/", async (req, res) => {
+router.get("/", checkAuthentication, async (req, res) => {
     const id = req.params.id
 
     const item = await Item.find({})
@@ -91,7 +91,7 @@ router.get("/", async (req, res) => {
 })
 
 //Buscar por ID
-router.get("/:id", async (req, res) => {
+router.get("/:id", checkAuthentication, async (req, res) => {
     const id = req.params.id
 
     const item = await Item.findById(id)
@@ -104,7 +104,7 @@ router.get("/:id", async (req, res) => {
 })
 
 //Editar item
-router.patch('/:id', async (req, res) => {
+router.patch('/:id', checkAuthentication, async (req, res) => {
     const id = req.params.id
 
     const { title, author, type, categoryId, price, description, active, editionDate, sellerId } = req.body
@@ -136,7 +136,7 @@ router.patch('/:id', async (req, res) => {
 })
 
 //Delete
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', checkAuthentication, async (req, res) => {
     const id = req.params.id
 
     const item = await Item.findOne({_id: id})

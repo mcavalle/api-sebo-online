@@ -61,7 +61,7 @@ router.post('/cadastro', checkAuthentication, async (req, res) => {
 })
 
 //Listar clientes
-router.get("/", async (req, res) => {
+router.get("/", checkAuthentication, async (req, res) => {
     const id = req.params.id
 
     const cliente = await Cliente.find({})
@@ -70,7 +70,7 @@ router.get("/", async (req, res) => {
 })
 
 //Buscar por ID
-router.get("/:id", async (req, res) => {
+router.get("/:id", checkAuthentication, async (req, res) => {
     const id = req.params.id
 
     const cliente = await Cliente.findById(id)
@@ -83,7 +83,7 @@ router.get("/:id", async (req, res) => {
 })
 
 //Editar cliente
-router.patch('/:id', async (req, res) => {
+router.patch('/:id', checkAuthentication, async (req, res) => {
     const id = req.params.id
 
     const { name, email, active } = req.body
@@ -109,7 +109,7 @@ router.patch('/:id', async (req, res) => {
 })
 
 //Delete
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', checkAuthentication, async (req, res) => {
     const id = req.params.id
 
     const cliente = await Cliente.findOne({_id: id})

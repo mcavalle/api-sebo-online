@@ -8,6 +8,22 @@ router.use(cookieParser());
 
 const Usuario = require('../models/Usuario')
 
+function checkAuthentication(req, res, next) {
+    const token = req.cookies.token;
+  
+    if (!token) {
+      return res.status(401).json({ message: 'Acesso negado. Faça login para continuar.' });
+    }
+  
+    try {
+      const secret = process.env.SECRET;
+      jwt.verify(token, secret);
+      next(); 
+    } catch (error) {
+      return res.status(401).json({ message: 'Token inválido. Faça login para continuar.' });
+    }
+  }
+
 
 //registrar usuário
 router.post('/cadastro', async (req, res) => {
@@ -131,7 +147,7 @@ router.get('/logout', (req, res) => {
   
 
 //Update
-router.patch('/:id', async (req, res) => {
+router.patch('/:id', checkAuthentication, async (req, res) => {
     const id = req.params.id
 
     const { name, email, password, confirmPassword, active, type } = req.body
@@ -160,7 +176,7 @@ router.patch('/:id', async (req, res) => {
 })
 
 //Delete
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', checkAuthentication, async (req, res) => {
     const id = req.params.id
 
     const usuario = await Usuario.findOne({_id: id})
