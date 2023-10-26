@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 
-const Item = mongoose.model('Item', {
+const Transacao = mongoose.model('Transacao', {
     clientId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Cliente'
@@ -17,4 +17,4 @@ const Item = mongoose.model('Item', {
     transactionDate: Date,
 })
 
-module.exports = Item
+module.exports = Transacao
