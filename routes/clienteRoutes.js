@@ -90,7 +90,7 @@ router.patch('/:id', async (req, res) => {
 
     const cliente = {
         name,
-        cliente,
+        email,
         active,
     }
 
