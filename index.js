@@ -24,16 +24,19 @@ app.use(express.json())
 
 //models
 const Usuario = require('./models/Usuario')
+const Cliente = require('./models/Cliente')
 const Livro = require('./models/Item')
 const Categoria = require('./models/Categoria')
 
 //rotas da API
 const usuarioRoutes = require('./routes/usuarioRoutes')
+const clienteRoutes = require('./routes/clienteRoutes')
 const adminRoutes = require('./routes/adminRoutes')
 const itemRoutes = require('./routes/itemRoutes')
 const categoriaRoutes = require('./routes/categoriaRoutes')
 
 app.use('/usuario', usuarioRoutes)
+app.use('/cliente', clienteRoutes)
 app.use('/admin', adminRoutes)
 app.use('/item', itemRoutes)
 app.use('/categoria', categoriaRoutes)
