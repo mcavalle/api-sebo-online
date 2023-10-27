@@ -102,7 +102,7 @@ function checkToken (req, res, next){
 router.get("/usuarios", checkToken, async (req, res) => {
     const id = req.params.id
 
-    const usuario = await Usuario.find({}, '-password')
+    const usuario = await Usuario.find({}/*, '-password'*/)
 
     res.status(200).json({usuario})
 })
