@@ -33,6 +33,10 @@ router.post("/login", async (req, res) => {
         return res.status(422).json({message: 'Senha inválida!'})
     }
 
+    if (user.type !== 'administrador') {
+        return res.status(403).json({ message: 'Acesso negado. Apenas administradores podem fazer login.' });
+    }
+
     try{
         const secret = process.env.SECRET 
         const token = jwt.sign({
