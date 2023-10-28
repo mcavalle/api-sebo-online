@@ -159,7 +159,7 @@ router.patch('/:id', checkAuthentication, async (req, res) => {
         confirmPassword,
         active,
         type
-    }
+    };
 
     try{
         const updateUsuario = await Usuario.updateOne({_id: id}, usuario)
@@ -168,7 +168,7 @@ router.patch('/:id', checkAuthentication, async (req, res) => {
             res.status(422).json({message: 'Usuário não foi encontrado!'})
         }
 
-        res.status(200).json(usuario, '-password')
+        res.status(200).json(usuario)
 
     } catch (error){
         res.status(500).json({error: error})
